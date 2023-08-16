@@ -52,42 +52,37 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def sizes(self, data):
         max_x = max_y = min_x = min_y = 0
-
         for row in data.split('\n'):
-            if not row.startswith(';'):
-                row=row.split(';')[0]
-                for b in row.split():
-                    if b.find('X') != -1:
-                        x = self.get_value(b,'X')
-                        if x > max_x:
-                            max_x = x
-                        if x < min_x:
-                            min_x = x
-                    if b.find('Y') != -1:
-                        y = self.get_value(b,'Y')
-                        if y > max_y:
-                            max_y = y
-                        if y < min_y:
-                            min_y = y
-                size_x = max_x - min_x
-                size_y = max_y - min_y
+            for b in row.split():
+                if b.find('X') != -1:
+                    x = self.get_value(b,'X')
+                    if x > max_x:
+                        max_x = x
+                    if x < min_x:
+                        min_x = x
+                if b.find('Y') != -1:
+                    y = self.get_value(b,'Y')
+                    if y > max_y:
+                        max_y = y
+                    if y < min_y:
+                        min_y = y
+            size_x = max_x - min_x
+            size_y = max_y - min_y
         return [max_x, max_y, min_x, min_y, size_x, size_y]
 
     def move_xy(self, data, x, y):
         n_data = ''
         for row in data.split('\n'):
             n_row = []
-            if not row.startswith(';'):
-                row=row.split(';')[0]
-                for b in row.split():
-                    if b.find('X') != -1:
-                        n_b = 'X{}'.format((self.get_value(b,'X') + x))
-                    elif b.find('Y') != -1:
-                        n_b = 'Y{}'.format((self.get_value(b,'Y') + y))
-                    else:
-                        n_b = b
-                    n_row.append(n_b)
-                n_data = "{}{}\n".format(n_data, ' '.join(n_row))
+            for b in row.split():
+                if b.find('X') != -1:
+                    n_b = 'X{}'.format((self.get_value(b,'X') + x))
+                elif b.find('Y') != -1:
+                    n_b = 'Y{}'.format((self.get_value(b,'Y') + y))
+                else:
+                    n_b = b
+                n_row.append(n_b)
+            n_data = "{}{}\n".format(n_data, ' '.join(n_row))
         return n_data
 
     def rotate_data(self, data):
@@ -100,19 +95,17 @@ class MainWindow(QtWidgets.QMainWindow):
                 n_data = ''
                 for row in data.split('\n'):
                     n_row = []
-                    if not row.startswith(';'):
-                        row=row.split(';')[0]
-                        for b in row.split():
-                            if b.find('X') != -1:
-                                n_val = -self.get_value(b,'X') + g_size[4]
-                                n_b = 'Y{}'.format(n_val)
-                            elif b.find('Y') != -1:
-                                val = b.replace('Y', '')
-                                n_b = 'X{}'.format(float(val))
-                            else:
-                                n_b = b
-                            n_row.append(n_b)
-                        n_data = "{}{}\n".format(n_data, ' '.join(n_row))
+                    for b in row.split():
+                        if b.find('X') != -1:
+                            n_val = -self.get_value(b,'X') + g_size[4]
+                            n_b = 'Y{}'.format(n_val)
+                        elif b.find('Y') != -1:
+                            val = b.replace('Y', '')
+                            n_b = 'X{}'.format(float(val))
+                        else:
+                            n_b = b
+                        n_row.append(n_b)
+                    n_data = "{}{}\n".format(n_data, ' '.join(n_row))
                 data = n_data
         return data
 
@@ -125,19 +118,17 @@ class MainWindow(QtWidgets.QMainWindow):
             g_size = self.sizes(data)
             for row in data.split('\n'):
                 n_row = []
-                if not row.startswith(';'):
-                    row=row.split(';')[0]
-                    for b in row.split():
-                        if b.find('X') != -1 and x:
-                            n_val = -self.get_value(b,'X') + g_size[4]
-                            n_b = 'X{}'.format(n_val)
-                        elif b.find('Y') != -1 and y:
-                            n_val = -self.get_value(b,'Y') + g_size[5]
-                            n_b = 'Y{}'.format(n_val)
-                        else:
-                            n_b = b
-                        n_row.append(n_b)
-                    n_data = "{}{}\n".format(n_data, ' '.join(n_row))
+                for b in row.split():
+                    if b.find('X') != -1 and x:
+                        n_val = -self.get_value(b,'X') + g_size[4]
+                        n_b = 'X{}'.format(n_val)
+                    elif b.find('Y') != -1 and y:
+                        n_val = -self.get_value(b,'Y') + g_size[5]
+                        n_b = 'Y{}'.format(n_val)
+                    else:
+                        n_b = b
+                    n_row.append(n_b)
+                n_data = "{}{}\n".format(n_data, ' '.join(n_row))
         else:
             n_data = data
 
@@ -149,19 +140,17 @@ class MainWindow(QtWidgets.QMainWindow):
             rate = float(int(self.ui.scale.value()) / 100)
             for row in data.split('\n'):
                 n_row = []
-                if not row.startswith(';'):
-                    row=row.split(';')[0]
-                    for b in row.split():
-                        if b.find('X') != -1:
-                            x = self.get_value(b,'X')
-                            n_b = 'X{}'.format(float(x * rate))
-                        elif b.find('Y') != -1:
-                            y = self.get_value(b,'Y')
-                            n_b = 'Y{}'.format(float(y * rate))
-                        else:
-                            n_b = b
-                        n_row.append(n_b)
-                    n_data = "{}{}\n".format(n_data, ' '.join(n_row))
+                for b in row.split():
+                    if b.find('X') != -1:
+                        x = self.get_value(b,'X')
+                        n_b = 'X{}'.format(float(x * rate))
+                    elif b.find('Y') != -1:
+                        y = self.get_value(b,'Y')
+                        n_b = 'Y{}'.format(float(y * rate))
+                    else:
+                        n_b = b
+                    n_row.append(n_b)
+                n_data = "{}{}\n".format(n_data, ' '.join(n_row))
         else:
             n_data = data
 
@@ -206,32 +195,36 @@ class MainWindow(QtWidgets.QMainWindow):
         z_points = []
 
         for row in data.split('\n'):
-            if not row.startswith(';'):
-                row=row.split(';')[0]
-                has=0
-                for b in row.split():
-                    if b.find('X') != -1:
-                        xs = self.get_value(b,'X')
-                        has=1
-                    if b.find('Y') != -1:
-                        ys = self.get_value(b,'Y')
-                        has=1
-                    if b.find('Z') != -1:
-                        zs = self.get_value(b,'Z')
-                        has=1
-                if has == 1:
-                    x_points.append(xs)
-                    y_points.append(ys)
-                    z_points.append(zs)
+            has=0
+            for b in row.split():
+                if b.find('X') != -1:
+                    xs = self.get_value(b,'X')
+                    has=1
+                if b.find('Y') != -1:
+                    ys = self.get_value(b,'Y')
+                    has=1
+                if b.find('Z') != -1:
+                    zs = self.get_value(b,'Z')
+                    has=1
+            if has == 1:
+                x_points.append(xs)
+                y_points.append(ys)
+                z_points.append(zs)
 
-        self.ax.set_box_aspect((np.ptp(x_points), np.ptp(y_points), np.ptp(z_points) * 5))
+        self.ax.set_box_aspect((np.ptp(x_points), np.ptp(y_points), np.ptp(z_points)))
         self.ax.plot(x_points, y_points, z_points)
 
         self.ui.canvas.draw()
 
     def load_data_from_file(self, file_name):
+        data=''
         with open(file_name) as file:
-            data = file.read()
+            tmp_data = file.read()
+
+        for row in tmp_data.split('\n'):
+            if not row.startswith(';'):
+                data = "{}{}\n".format(data, row.split(';')[0])
+
         return data
 
 
